@@ -1,40 +1,41 @@
 'use strict';
-let mongoose = require('mongoose'),
+const mongoose = require('mongoose'),
     Experience = mongoose.model('Experience');
 
 exports.listAllExperiences = (req, res) => {
-    Experience.find({}, (err, hobbies) => {
+    Experience.find({}, (err, experiencies) => {
         err
         ? res.status(404).json({
-            status: 'model_not_found',
+            status: 'experience_not_found',
             errors: err.errors
         })
-        : res.status(200).json(hobbies);
+        : res.status(200).json(experiencies);
     });
 };
 
 exports.createExperience = (req, res) => {
-    let hobby = new Experience(req.body);
-    hobby.save((err, hobby) => {
+    let experience = new Experience(req.body);
+    experience.save((err, hobby) => {
         err
         ? res.status(401).json({
-            status: 'model_not_created',
+            status: 'experience_not_created',
             errors: err.errors
         })
         : res.status(201).json({
-            status: 'model_created'
+            status: 'experience_created',
+            id: hobby._id.toString()
         });
     });
 };
 
 exports.readExperience = (req, res) => {
-    Experience.findById(req.params.id, (err, hobby) => {
+    Experience.findById(req.params.id, (err, experience) => {
         err
         ? res.status(404).json({
-            status: 'model_not_found',
+            status: 'experience_not_found',
             errors: err.errors
         })
-        : res.status(200).json(hobby);
+        : res.status(200).json(experience);
     });
 };
 
@@ -44,11 +45,11 @@ exports.updateExperience = (req, res) => {
     }, req.body, {new: true}, err => {
         err
         ? res.status(422).json({
-            status: 'model_not_updated',
+            status: 'experience_not_updated',
             errors: err.errors
         })
         : res.status(202).json({
-            status: 'model_updated'
+            status: 'experience_updated'
         })
     })
 };
@@ -56,14 +57,14 @@ exports.updateExperience = (req, res) => {
 exports.deleteExperience = (req, res) => {
     Experience.remove({
         _id: req.params.id
-    }, (err, hobby) => {
+    }, (err, experience) => {
         err
         ? res.status(403).json({
-            status: 'model_not_deleted',
+            status: 'experience_not_deleted',
             errors: err.errors
         })
         : res.status(202).send({
-            status: 'model_deleted'
+            status: 'experience_deleted'
         });
     });
 };

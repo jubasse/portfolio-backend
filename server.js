@@ -5,11 +5,12 @@ require('dotenv').config();
 require('./config/paths');
 
 // call the packages we need
-const express    = require('express');        // call express
-const app        = express();                 // define our app using express
+const express    = require('express');
+const app        = express();
 const bodyParser = require('body-parser');
 const Promise = global.Promise = require('bluebird');
-const port = process.env.PORT || 9093;        // set our port
+const port = process.env.PORT || 9093;
+const passport = require('passport');
 
 require('./models');
 
@@ -18,11 +19,23 @@ require('./models');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// ROUTES FOR OUR API
-// =============================================================================
+// Init passport
+app.use(passport.initialize());
+require(CONFIG_PATH + 'passport')(passport);
 
+// routes group
 app.use('/api/v1', require(ROUTE_PATH));
-
-console.log(app.stack);
+const AuthController = require(CONTROLLER_PATH + 'AuthController');
+app.post('/auth', AuthController.authenticate);
 
 app.listen(port);
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
+});
+
+exports.app = app;
+exports.passport = passport;

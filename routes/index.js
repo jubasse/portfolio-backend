@@ -1,7 +1,7 @@
 const router = require('express').Router();
 
 router.use('/hobbies', require('./hobby'));
-router.use('/skill', require('./skill'));
-router.use('/experience', require('./experience'));
+router.use('/skills', require('./skill'));
+router.use('/experiences', require('./experience'));
 
 module.exports = router;

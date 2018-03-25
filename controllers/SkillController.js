@@ -1,12 +1,12 @@
 'use strict';
-let mongoose = require('mongoose'),
+const mongoose = require('mongoose'),
     Skill = mongoose.model('Skill');
 
 exports.listAllSkills = (req, res) => {
     Skill.find({}, (err, skills) => {
         err
         ? res.status(404).json({
-            error: 'model_not_found'
+            error: 'skill_not_found'
         })
         : res.status(200).json(skills);
     })
@@ -17,10 +17,10 @@ exports.createSkill = (req, res) => {
     skill.save((err, skill) => {
         err
         ? res.status(401).json({
-            error: 'model_not_created'
+            error: 'skill_not_created'
         })
         : res.status(201).json({
-            status: 'model_created'
+            status: 'skill_created'
         });
     });
 };
@@ -29,7 +29,7 @@ exports.readSkill = (req, res) => {
     Skill.findById(req.params.id, (err, skill) => {
         err
         ? res.status(404).json({
-            error: 'model_not_found'
+            error: 'skill_not_found'
         })
         : res.status(200).json(skill);
     });
@@ -41,10 +41,10 @@ exports.updateSkill = (req, res) => {
     }, req.body, {new: true}, err => {
         err
         ? res.status(422).json({
-            error: 'model_not_updated'
+            error: 'skill_not_updated'
         })
         : res.status(202).json({
-            status: 'model_updated'
+            status: 'skill_updated'
         })
     })
 };
@@ -55,10 +55,10 @@ exports.deleteSkill = (req, res) => {
     }, (err, skill) => {
         err
         ? res.status(403).json({
-            error: 'model_not_deleted'
+            error: 'skill_not_deleted'
         })
         : res.status(202).send({
-            status: 'model_deleted'
+            status: 'skill_deleted'
         });
     });
 };
