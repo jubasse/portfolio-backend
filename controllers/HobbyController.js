@@ -2,6 +2,11 @@
 const mongoose = require('mongoose'),
     Hobby = mongoose.model('Hobby');
 
+/**
+ * List all the hobbies
+ * @param req
+ * @param res
+ */
 exports.listAllHobbies = (req, res) => {
     Hobby.find({}, (err, hobbies) => {
         err
@@ -13,6 +18,11 @@ exports.listAllHobbies = (req, res) => {
     })
 };
 
+/**
+ * Create a new hobby
+ * @param req
+ * @param res
+ */
 exports.createHobby = (req, res) => {
     let hobby = new Hobby(req.body);
     hobby.save((err, hobby) => {
@@ -28,6 +38,11 @@ exports.createHobby = (req, res) => {
     });
 };
 
+/**
+ * Show a hobby
+ * @param req
+ * @param res
+ */
 exports.readHobby = (req, res) => {
     Hobby.findById(req.params.id, (err, hobby) => {
         err
@@ -39,6 +54,11 @@ exports.readHobby = (req, res) => {
     });
 };
 
+/**
+ * Update a hobby
+ * @param req
+ * @param res
+ */
 exports.updateHobby = (req, res) => {
     Hobby.findOneAndUpdate({
         _id: req.params.id
@@ -54,6 +74,11 @@ exports.updateHobby = (req, res) => {
     })
 };
 
+/**
+ * Delete a hobby
+ * @param req
+ * @param res
+ */
 exports.deleteHobby = (req, res) => {
     Hobby.remove({
         _id: req.params.id

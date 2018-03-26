@@ -11,4 +11,6 @@ const user = new User({
 
 user.save();
 
-process.exit();
+setTimeout(() => {
+    process.exit();
+}, 2000);

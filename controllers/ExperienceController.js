@@ -2,6 +2,11 @@
 const mongoose = require('mongoose'),
     Experience = mongoose.model('Experience');
 
+/**
+ * List experiences
+ * @param req
+ * @param res
+ */
 exports.listAllExperiences = (req, res) => {
     Experience.find({}, (err, experiencies) => {
         err
@@ -13,6 +18,11 @@ exports.listAllExperiences = (req, res) => {
     });
 };
 
+/**
+ * Create an experience
+ * @param req
+ * @param res
+ */
 exports.createExperience = (req, res) => {
     let experience = new Experience(req.body);
     experience.save((err, hobby) => {
@@ -28,6 +38,11 @@ exports.createExperience = (req, res) => {
     });
 };
 
+/**
+ * Showing an experience
+ * @param req
+ * @param res
+ */
 exports.readExperience = (req, res) => {
     Experience.findById(req.params.id, (err, experience) => {
         err
@@ -39,6 +54,11 @@ exports.readExperience = (req, res) => {
     });
 };
 
+/**
+ * Updating an experience
+ * @param req
+ * @param res
+ */
 exports.updateExperience = (req, res) => {
     Experience.findOneAndUpdate({
         _id: req.params.id
@@ -54,6 +74,11 @@ exports.updateExperience = (req, res) => {
     })
 };
 
+/**
+ * Deleting an experience
+ * @param req
+ * @param res
+ */
 exports.deleteExperience = (req, res) => {
     Experience.remove({
         _id: req.params.id

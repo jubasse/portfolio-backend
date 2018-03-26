@@ -2,6 +2,12 @@
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose'),
     User = mongoose.model('User');
+
+/**
+ * Authenticates user
+ * @param req
+ * @param res
+ */
 exports.authenticate = (req, res) => {
     User.findOne({
         email: req.body.email

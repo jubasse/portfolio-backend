@@ -1,7 +1,11 @@
 'use strict';
 const mongoose = require('mongoose'),
     Skill = mongoose.model('Skill');
-
+/**
+ * List all skills
+ * @param req
+ * @param res
+ */
 exports.listAllSkills = (req, res) => {
     Skill.find({}, (err, skills) => {
         err
@@ -12,6 +16,11 @@ exports.listAllSkills = (req, res) => {
     })
 };
 
+/**
+ * Create a new skill
+ * @param req
+ * @param res
+ */
 exports.createSkill = (req, res) => {
     let skill = new Skill(req.body);
     skill.save((err, skill) => {
@@ -25,6 +34,11 @@ exports.createSkill = (req, res) => {
     });
 };
 
+/**
+ * Show a skill
+ * @param req
+ * @param res
+ */
 exports.readSkill = (req, res) => {
     Skill.findById(req.params.id, (err, skill) => {
         err
@@ -35,6 +49,11 @@ exports.readSkill = (req, res) => {
     });
 };
 
+/**
+ * Update a skill
+ * @param req
+ * @param res
+ */
 exports.updateSkill = (req, res) => {
     Skill.findOneAndUpdate({
         _id: req.params.id
@@ -49,6 +68,11 @@ exports.updateSkill = (req, res) => {
     })
 };
 
+/**
+ * Delete a skill
+ * @param req
+ * @param res
+ */
 exports.deleteSkill = (req, res) => {
     Skill.remove({
         _id: req.params.id
