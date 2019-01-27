@@ -1,11 +1,11 @@
 const HobbyController = require(CONTROLLER_PATH + 'HobbyController');
 const router = require('express').Router();
-const p = require('passport'), opt = { session: false };
+const p = require('passport'), jwt = p.authenticate('jwt', { session: false });
 
 router.get('/', HobbyController.listAllHobbies);
-router.post('/', p.authenticate('jwt', opt), HobbyController.createHobby);
+router.post('/', jwt, HobbyController.createHobby);
 router.get('/:id', HobbyController.readHobby);
-router.put('/:id', p.authenticate('jwt', opt), HobbyController.updateHobby);
-router.delete('/:id', p.authenticate('jwt', opt), HobbyController.deleteHobby);
+router.put('/:id', jwt, HobbyController.updateHobby);
+router.delete('/:id', jwt, HobbyController.deleteHobby);
 
 module.exports = router;

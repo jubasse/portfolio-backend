@@ -1,4 +1,5 @@
 const cluster = require('cluster');
+const log = global.log = (...args) => console.log(...args);
 
 // clustering
 if (cluster.isMaster) {
@@ -8,15 +9,13 @@ if (cluster.isMaster) {
         cluster.fork();
     }
     // on worker exit
-    cluster.on('exit', function(worker, code, signal) {
-        console.log('Worker ' + worker.process.pid + ' died.');
+    cluster.on('exit', worker => {
+        log(`Worker ${worker.process.pid} died.`);
         cluster.fork();
     });
 
     // when a thread start listening
-    cluster.on('listening', function(worker, address) {
-        console.log('Worker started with PID ' + worker.process.pid + '.');
-    });
+    cluster.on('listening', worker => log(`Worker started with PID ${worker.process.pid}.`));
 } else {
     // getting configuration
     global.ROOT_PATH = `${__dirname}/`;
@@ -27,7 +26,7 @@ if (cluster.isMaster) {
     const express    = require('express');
     const app        = express();
     const bodyParser = require('body-parser');
-    const Promise = global.Promise = require('bluebird');
+    Promise = global.Promise = require('bluebird');
     const port = process.env.PORT || 9093;
     const passport = require('passport');
     const morgan = require('morgan');
@@ -54,15 +53,17 @@ if (cluster.isMaster) {
     app.post('/auth', AuthController.authenticate);
 
     // starting server
-    app.listen(port, () => {
-        console.log(`server listening on port ${port}`);
-    });
+    app.listen(port, () => log(`server listening on port ${port}`));
 
     // catch 404 and forward to error handler
-    app.use(function(req, res, next) {
-        let err = new Error('Not Found');
-        err.status = 404;
-        next(err);
+    app.use((req, res) => {
+        res.status(404);
+        // respond with json
+        if (req.accepts('json')) {
+            return res.send({ error: 'Not found' });
+        }
+        // default to plain-text. send()
+        return res.type('txt').send('Not found');
     });
 
     // adding exports

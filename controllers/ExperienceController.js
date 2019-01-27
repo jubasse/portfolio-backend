@@ -8,13 +8,18 @@ const mongoose = require('mongoose'),
  * @param res
  */
 exports.listAllExperiences = (req, res) => {
-    Experience.find({}, (err, experiencies) => {
+    Experience.find({}, (err, data) => {
         err
         ? res.status(404).json({
-            status: 'experience_not_found',
+            error: 'experiences_not_found',
+            resource: 'experience',
             errors: err.errors
         })
-        : res.status(200).json(experiencies);
+        : res.status(200).json({
+            status: 'experiences_found',
+            resource: 'experience',
+            data
+        });
     });
 };
 
@@ -25,15 +30,18 @@ exports.listAllExperiences = (req, res) => {
  */
 exports.createExperience = (req, res) => {
     let experience = new Experience(req.body);
-    experience.save((err, hobby) => {
+    experience.save((err, data) => {
         err
         ? res.status(401).json({
-            status: 'experience_not_created',
+            error: 'experience_not_created',
+            resource: 'experience',
             errors: err.errors
         })
         : res.status(201).json({
             status: 'experience_created',
-            id: hobby._id.toString()
+            resource: 'experience',
+            _id: data._id.toString(),
+            data
         });
     });
 };
@@ -44,13 +52,21 @@ exports.createExperience = (req, res) => {
  * @param res
  */
 exports.readExperience = (req, res) => {
-    Experience.findById(req.params.id, (err, experience) => {
+    const _id = req.params.id.toString();
+    Experience.findById(_id, (err, data) => {
         err
         ? res.status(404).json({
-            status: 'experience_not_found',
+            error: 'experience_not_found',
+            resource: 'experience',
+            _id,
             errors: err.errors
         })
-        : res.status(200).json(experience);
+        : res.status(200).json({
+            status: 'experience_not_found',
+            resource: 'experience',
+            _id,
+            data
+        });
     });
 };
 
@@ -60,16 +76,21 @@ exports.readExperience = (req, res) => {
  * @param res
  */
 exports.updateExperience = (req, res) => {
+    const _id = req.params.id.toString();
     Experience.findOneAndUpdate({
-        _id: req.params.id
-    }, req.body, {new: true}, err => {
+        _id
+    }, req.body, {new: true}, (err, data) => {
         err
         ? res.status(422).json({
             status: 'experience_not_updated',
+            resource: 'experience',
             errors: err.errors
         })
         : res.status(202).json({
-            status: 'experience_updated'
+            status: 'experience_updated',
+            resource: 'experience',
+            _id,
+            data
         })
     })
 };
@@ -80,16 +101,21 @@ exports.updateExperience = (req, res) => {
  * @param res
  */
 exports.deleteExperience = (req, res) => {
+    const _id = req.params.id.toString();
     Experience.remove({
-        _id: req.params.id
-    }, (err, experience) => {
+        _id
+    }, err => {
         err
         ? res.status(403).json({
-            status: 'experience_not_deleted',
+            error: 'experience_not_deleted',
+            resource: 'experience',
+            _id,
             errors: err.errors
         })
         : res.status(202).send({
-            status: 'experience_deleted'
+            status: 'experience_deleted',
+            resource: 'experience',
+            _id,
         });
     });
 };

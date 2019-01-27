@@ -8,13 +8,18 @@ const mongoose = require('mongoose'),
  * @param res
  */
 exports.listAllHobbies = (req, res) => {
-    Hobby.find({}, (err, hobbies) => {
+    Hobby.find({}, (err, data) => {
         err
         ? res.status(404).json({
-            status: 'hobby_not_found',
+            error: 'hobbies_not_found',
+            resource: 'hobby',
             errors: err.errors
         })
-        : res.status(200).json(hobbies);
+        : res.status(200).json({
+            status: 'hobbies_found',
+            resource: 'hobby',
+            data
+        });
     })
 };
 
@@ -25,15 +30,18 @@ exports.listAllHobbies = (req, res) => {
  */
 exports.createHobby = (req, res) => {
     let hobby = new Hobby(req.body);
-    hobby.save((err, hobby) => {
+    hobby.save((err, data) => {
         err
         ? res.status(401).json({
             status: 'hobby_not_created',
+            resource: 'hobby',
             errors: err.errors
         })
         : res.status(201).json({
             status: 'hobby_created',
-            id: hobby._id.toString()
+            resource: 'hobby',
+            _id: data._id.toString(),
+            data
         });
     });
 };
@@ -44,13 +52,21 @@ exports.createHobby = (req, res) => {
  * @param res
  */
 exports.readHobby = (req, res) => {
-    Hobby.findById(req.params.id, (err, hobby) => {
+    const _id = req.params.id.toString();
+    Hobby.findById(_id, (err, data) => {
         err
         ? res.status(404).json({
             status: 'hobby_not_found',
+            resource: 'hobby',
+            _id,
             errors: err.errors
         })
-        : res.status(200).json(hobby);
+        : res.status(200).json({
+            status: 'hobby_found',
+            resource: 'hobby',
+            _id,
+            data
+        });
     });
 };
 
@@ -60,16 +76,22 @@ exports.readHobby = (req, res) => {
  * @param res
  */
 exports.updateHobby = (req, res) => {
+    const _id = req.params.id.toString();
     Hobby.findOneAndUpdate({
-        _id: req.params.id
-    }, req.body, {new: true}, err => {
+        _id
+    }, req.body, {new: true}, (err, data) => {
         err
         ? res.status(422).json({
             status: 'hobby_not_updated',
+            resource: 'hobby',
+            _id,
             errors: err.errors
         })
         : res.status(202).json({
-            status: 'hobby_updated'
+            status: 'hobby_updated',
+            resource: 'hobby',
+            _id,
+            data
         })
     })
 };
@@ -80,16 +102,21 @@ exports.updateHobby = (req, res) => {
  * @param res
  */
 exports.deleteHobby = (req, res) => {
+    const _id = req.params.id.toString();
     Hobby.remove({
-        _id: req.params.id
-    }, (err, hobby) => {
+        _id
+    }, err => {
         err
         ? res.status(403).json({
-            status: 'hobby_not_deleted',
+            error: 'hobby_not_deleted',
+            resource: 'hobby',
+            _id,
             errors: err.errors
         })
         : res.status(202).send({
-            status: 'hobby_deleted'
+            status: 'hobby_deleted',
+            resource: 'hobby',
+            _id
         });
     });
 };

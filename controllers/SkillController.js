@@ -7,12 +7,18 @@ const mongoose = require('mongoose'),
  * @param res
  */
 exports.listAllSkills = (req, res) => {
-    Skill.find({}, (err, skills) => {
+    Skill.find({}, (err, data) => {
         err
         ? res.status(404).json({
-            error: 'skill_not_found'
+            error: 'skills_not_found',
+            resource: 'skill',
+            errors: err.errors
         })
-        : res.status(200).json(skills);
+        : res.status(200).json({
+             status: 'skills_found',
+            resource: 'skill',
+             data
+        });
     })
 };
 
@@ -23,13 +29,18 @@ exports.listAllSkills = (req, res) => {
  */
 exports.createSkill = (req, res) => {
     let skill = new Skill(req.body);
-    skill.save((err, skill) => {
+    skill.save((err, data) => {
         err
         ? res.status(401).json({
-            error: 'skill_not_created'
+            error: 'skill_not_created',
+            resource: 'skill',
+            errors: err.errors
         })
         : res.status(201).json({
-            status: 'skill_created'
+            status: 'skill_created',
+            resource: 'skill',
+            _id: data._id.toString(),
+            data
         });
     });
 };
@@ -40,12 +51,21 @@ exports.createSkill = (req, res) => {
  * @param res
  */
 exports.readSkill = (req, res) => {
-    Skill.findById(req.params.id, (err, skill) => {
+    const _id = req.params.id.toString();
+    Skill.findById(_id, (err, data) => {
         err
         ? res.status(404).json({
-            error: 'skill_not_found'
+            error: 'skill_not_found',
+            resource: 'skill',
+            _id,
+            errors: err.errors
         })
-        : res.status(200).json(skill);
+        : res.status(200).json({
+            status: 'skill_found',
+            resource: 'skill',
+            _id,
+            data
+        });
     });
 };
 
@@ -55,15 +75,22 @@ exports.readSkill = (req, res) => {
  * @param res
  */
 exports.updateSkill = (req, res) => {
+    const _id = req.params.id.toString();
     Skill.findOneAndUpdate({
-        _id: req.params.id
-    }, req.body, {new: true}, err => {
+        _id
+    }, { $set: req.body }, {new: true}, (err, data) => {
         err
         ? res.status(422).json({
-            error: 'skill_not_updated'
+            error: 'skill_not_updated',
+            resource: 'skill',
+            _id,
+            errors: err.errors
         })
         : res.status(202).json({
-            status: 'skill_updated'
+            status: 'skill_updated',
+            resource: 'skill',
+            _id,
+            data
         })
     })
 };
@@ -74,15 +101,21 @@ exports.updateSkill = (req, res) => {
  * @param res
  */
 exports.deleteSkill = (req, res) => {
+    const _id = req.params.id.toString();
     Skill.remove({
-        _id: req.params.id
-    }, (err, skill) => {
+        _id
+    }, err => {
         err
         ? res.status(403).json({
-            error: 'skill_not_deleted'
+            error: 'skill_not_deleted',
+            resource: 'skill',
+            _id,
+            errors: err.errors
         })
         : res.status(202).send({
-            status: 'skill_deleted'
+            status: 'skill_deleted',
+            resource: 'skill',
+            _id
         });
     });
 };

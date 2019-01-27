@@ -8,13 +8,18 @@ const mongoose = require('mongoose'),
  * @param res
  */
 exports.listAllEducations = (req, res) => {
-    Education.find({}, (err, educations) => {
+    Education.find({}, (err, data) => {
         err
             ? res.status(404).json({
-                status: 'education_not_found',
+                error: 'educations_not_found',
+                resource: 'eduction',
                 errors: err.errors
             })
-            : res.status(200).json(educations);
+            : res.status(200).json({
+                status: 'educations_found',
+                resource: 'eduction',
+                data
+            });
     });
 };
 
@@ -25,15 +30,18 @@ exports.listAllEducations = (req, res) => {
  */
 exports.createEducation = (req, res) => {
     let education = new Education(req.body);
-    education.save((err, hobby) => {
+    education.save((err, data) => {
         err
             ? res.status(401).json({
-                status: 'education_not_created',
+                error: 'education_not_created',
+                resource: 'eduction',
                 errors: err.errors
             })
             : res.status(201).json({
                 status: 'education_created',
-                id: hobby._id.toString()
+                resource: 'eduction',
+                _id: data._id.toString(),
+                data
             });
     });
 };
@@ -44,13 +52,21 @@ exports.createEducation = (req, res) => {
  * @param res
  */
 exports.readEducation = (req, res) => {
-    Education.findById(req.params.id, (err, education) => {
+    const _id = req.params.id.toString();
+    Education.findById(_id, (err, data) => {
         err
             ? res.status(404).json({
-                status: 'education_not_found',
+                error: 'education_not_found',
+                resource: 'eduction',
+                _id,
                 errors: err.errors
             })
-            : res.status(200).json(education);
+            : res.status(200).json({
+                status: 'eduction_found',
+                resource: 'eduction',
+                _id,
+                data
+            });
     });
 };
 
@@ -60,16 +76,22 @@ exports.readEducation = (req, res) => {
  * @param res
  */
 exports.updateEducation = (req, res) => {
+    const _id = req.params.id.toString();
     Education.findOneAndUpdate({
-        _id: req.params.id
-    }, req.body, {new: true}, err => {
+        _id
+    }, req.body, {new: true}, (err, data) => {
         err
             ? res.status(422).json({
-                status: 'education_not_updated',
+                error: 'education_not_updated',
+                resource: 'eduction',
+                _id,
                 errors: err.errors
             })
             : res.status(202).json({
-                status: 'education_updated'
+                status: 'education_updated',
+                resource: 'eduction',
+                _id,
+                data
             })
     })
 };
@@ -80,16 +102,21 @@ exports.updateEducation = (req, res) => {
  * @param res
  */
 exports.deleteEducation = (req, res) => {
+    const _id = req.params.id.toString();
     Education.remove({
-        _id: req.params.id
-    }, (err, education) => {
+        _id
+    }, err => {
         err
             ? res.status(403).json({
-                status: 'education_not_deleted',
+                error: 'education_not_deleted',
+                resource: 'eduction',
+                _id,
                 errors: err.errors
             })
             : res.status(202).send({
-                status: 'education_deleted'
+                status: 'education_deleted',
+                resource: 'eduction',
+                _id
             });
     });
 };

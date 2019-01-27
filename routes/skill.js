@@ -1,11 +1,11 @@
 const SkillController = require(CONTROLLER_PATH + 'SkillController');
 const router = require('express').Router();
-const p = require('passport'), opt = { session: false };
+const p = require('passport'), jwt = p.authenticate('jwt', { session: false });
 
 router.get('/', SkillController.listAllSkills);
-router.post('/', p.authenticate('jwt', opt), SkillController.createSkill);
+router.post('/', jwt, SkillController.createSkill);
 router.get('/:id', SkillController.readSkill);
-router.put('/:id', p.authenticate('jwt', opt), SkillController.updateSkill);
-router.delete('/:id', p.authenticate('jwt', opt), SkillController.deleteSkill);
+router.put('/:id', jwt, SkillController.updateSkill);
+router.delete('/:id', jwt, SkillController.deleteSkill);
 
 module.exports = router;
